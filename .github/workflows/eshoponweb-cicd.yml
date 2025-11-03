@@ -29,11 +29,11 @@ jobs:
     #Build/Test/Publish the .net project
     - name: Build with dotnet
       working-directory: ./eShopOnWeb
-      run: dotnet build eShopOnWeb.sln --configuration Release /p:TreatWarningsAsErrors=false
+      run: dotnet build eShopOnWeb.sln --configuration Release --no-build /p:TreatWarningsAsErrors=false
 
     - name: Test with dotnet
       working-directory: ./eShopOnWeb
-      run: dotnet test eShopOnWeb.sln --configuration Release --no-build
+      run: dotnet test eShopOnWeb.sln --configuration Release --no-build -v normal
     - name: dotnet publish
       run: |
         dotnet publish ./src/Web/Web.csproj -c Release -o ${{env.DOTNET_ROOT}}/myapp
