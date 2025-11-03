@@ -39,9 +39,9 @@ jobs:
       #   working-directory: ./eShopOnWeb/src/Web
       #   run: dotnet build Web.csproj --configuration Release
       
-      - name: Build PublicApi project
-        working-directory: ./eShopOnWeb
-        run: dotnet build ./src/PublicApi/PublicApi.csproj --configuration Release
+      # - name: Build PublicApi project
+      #   working-directory: ./eShopOnWeb
+      #   run: dotnet build ./src/PublicApi/PublicApi.csproj --configuration Release
 
 
       # Run UnitTests
