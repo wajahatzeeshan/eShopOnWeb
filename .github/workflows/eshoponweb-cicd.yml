@@ -32,7 +32,8 @@ jobs:
       run: |
         wget https://dot.net/v1/dotnet-install.sh -O dotnet-install.sh
         chmod +x dotnet-install.sh
-        ./dotnet-install.sh --runtime aspnetcore --channel 8.0 --install-dir $HOME/.dotnet
+        # Install the .NET 8 SDK into $HOME/.dotnet so the `dotnet` on PATH is a full SDK
+        ./dotnet-install.sh --channel 8.0 --install-dir $HOME/.dotnet
         echo "$HOME/.dotnet" >> $GITHUB_PATH
         echo "DOTNET_ROOT=$HOME/.dotnet" >> $GITHUB_ENV
         dotnet --list-runtimes
