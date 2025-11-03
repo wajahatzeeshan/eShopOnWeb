@@ -26,7 +26,12 @@ jobs:
       with:
         dotnet-version: '8.0.x'
         # dotnet-quality: 'preview'
-    #Build/Test/Publish the .net project
+    
+    - name: Clean .NET solution
+      working-directory: ./eShopOnWeb
+      run: dotnet clean eShopOnWeb.sln
+
+        #Build/Test/Publish the .net project
     - name: Build with dotnet
       working-directory: ./eShopOnWeb
       run: dotnet build eShopOnWeb.sln --configuration Release
