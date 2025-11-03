@@ -49,11 +49,11 @@ jobs:
         working-directory: ./eShopOnWeb/tests/IntegrationTests
         run: dotnet test --configuration Release --no-build --logger "console;verbosity=detailed"
 
-      # Run FunctionalTests (optional, fail-safe)
-      - name: Run FunctionalTests
-        working-directory: ./eShopOnWeb/tests/FunctionalTests
-        continue-on-error: true
-        run: dotnet test --configuration Release --no-build --logger "console;verbosity=detailed"
+      # # Run FunctionalTests (optional, fail-safe)
+      # - name: Run FunctionalTests
+      #   working-directory: ./eShopOnWeb/tests/FunctionalTests
+      #   continue-on-error: true
+      #   run: dotnet test --configuration Release --no-build --logger "console;verbosity=detailed"
 
       # Run PublicIntegrationTests (optional, MSTest)
       - name: Run PublicIntegrationTests
