@@ -40,14 +40,14 @@ jobs:
         run: dotnet build Web.csproj --configuration Release
 
       # Run UnitTests
-      - name: Run UnitTests
-        working-directory: ./eShopOnWeb/tests/UnitTests
-        run: dotnet test --configuration Release --no-build --logger "console;verbosity=detailed"
+      # - name: Run UnitTests
+      #   working-directory: ./eShopOnWeb/tests/UnitTests
+      #   run: dotnet test --configuration Release --no-build --logger "console;verbosity=detailed"
 
       # Run IntegrationTests
-      - name: Run IntegrationTests
-        working-directory: ./eShopOnWeb/tests/IntegrationTests
-        run: dotnet test --configuration Release --no-build --logger "console;verbosity=detailed"
+      # - name: Run IntegrationTests
+      #   working-directory: ./eShopOnWeb/tests/IntegrationTests
+      #   run: dotnet test --configuration Release --no-build --logger "console;verbosity=detailed"
 
       # # Run FunctionalTests (optional, fail-safe)
       # - name: Run FunctionalTests
@@ -56,11 +56,12 @@ jobs:
       #   run: dotnet test --configuration Release --no-build --logger "console;verbosity=detailed"
 
       # Run PublicIntegrationTests (optional, MSTest)
-      - name: Run PublicIntegrationTests
-        working-directory: ./eShopOnWeb/tests/PublicIntegrationTests
-        continue-on-error: true
-        run: dotnet test --configuration Release --no-build --logger "console;verbosity=detailed"
-
+      # - name: Run PublicIntegrationTests
+      #   working-directory: ./eShopOnWeb/tests/PublicIntegrationTests
+      #   continue-on-error: true
+      #   run: dotnet test --configuration Release --no-build --logger "console;verbosity=detailed"
+      - name: Test with dotnet
+        run: dotnet test ./eShopOnWeb.sln --configuration Release --no-build --logger "console;verbosity=detailed"
       # Publish Web project
       - name: dotnet publish
         run: |
