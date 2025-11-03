@@ -24,10 +24,10 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      # Clean solution
-      - name: Clean .NET solution
-        working-directory: ./eShopOnWeb
-        run: dotnet clean eShopOnWeb.sln
+      # # Clean solution
+      # - name: Clean .NET solution
+      #   working-directory: ./eShopOnWeb
+      #   run: dotnet clean eShopOnWeb.sln
 
       # Build solution
       - name: Build solution
