@@ -26,6 +26,18 @@ jobs:
       with:
         dotnet-version: '8.0.x'
         dotnet-quality: 'preview'
+    - name: Show dotnet info (diagnostics)
+      run: dotnet --info
+    - name: Ensure ASP.NET Core 8 runtime is installed
+      run: |
+        wget https://dot.net/v1/dotnet-install.sh -O dotnet-install.sh
+        chmod +x dotnet-install.sh
+        # Install ASP.NET Core runtime 8 to $HOME/.dotnet so it doesn't require sudo
+        ./dotnet-install.sh --runtime aspnetcore --version 8.0.0 --install-dir $HOME/.dotnet
+        # Make the installed dotnet available to the rest of the workflow
+        echo "$HOME/.dotnet" >> $GITHUB_PATH
+        echo "DOTNET_ROOT=$HOME/.dotnet" >> $GITHUB_ENV
+        dotnet --list-runtimes
     #Build/Test/Publish the .net project
     - name: Build with dotnet
       run: dotnet build ./eShopOnWeb.sln --configuration Release
