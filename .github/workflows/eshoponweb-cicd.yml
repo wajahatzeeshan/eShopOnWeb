@@ -1,7 +1,7 @@
 name: eShopOnWeb Build and Test
 
 #Triggers
-on: [workflow_dispatch]
+on: workflow_dispatch
 
 #Environment variables
 env:
@@ -38,6 +38,11 @@ jobs:
       - name: Build Web project
         working-directory: ./eShopOnWeb/src/Web
         run: dotnet build Web.csproj --configuration Release
+      
+      - name: Build PublicApi project
+        working-directory: ./eShopOnWeb
+        run: dotnet build ./src/PublicApi/PublicApi.csproj --configuration Release
+
 
       # Run UnitTests
       # - name: Run UnitTests
