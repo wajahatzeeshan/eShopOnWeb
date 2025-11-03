@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Net.Http;
+using System.IO;
+using Microsoft.AspNetCore.Hosting;
 
 namespace PublicApiIntegrationTests;
 
@@ -20,7 +22,12 @@ public class ProgramTest
     [AssemblyInitialize]
     public static void AssemblyInitialize(TestContext _)
     {
-        _application = new WebApplicationFactory<Program>();
+        // Ensure the WebApplicationFactory uses the test project's content root
+        var testProjectPath = Path.GetDirectoryName(typeof(ProgramTest).Assembly.Location)!;
+        _application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
+        {
+            builder.UseContentRoot(testProjectPath);
+        });
 
     }
 }

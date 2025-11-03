@@ -27,8 +27,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpoints();
 
-// Use to force loading of appsettings.json of test project
-builder.Configuration.AddConfigurationFile("appsettings.test.json");
+// Load test configuration file if present (optional) so tests can override settings like using in-memory DB
+builder.Configuration.AddJsonFile("appsettings.test.json", optional: true, reloadOnChange: false);
 builder.Logging.AddConsole();
 
 Microsoft.eShopWeb.Infrastructure.Dependencies.ConfigureServices(builder.Configuration, builder.Services);
