@@ -30,9 +30,9 @@ jobs:
       #   run: dotnet clean eShopOnWeb.sln
 
       # Build solution
-      - name: Build solution
-        working-directory: ./eShopOnWeb
-        run: dotnet build eShopOnWeb.sln --configuration Release
+      # - name: Build solution
+      #   working-directory: ./eShopOnWeb
+      #   run: dotnet build eShopOnWeb.sln --configuration Release
       
       # Build the Web project explicitly for FunctionalTests
       - name: Build Web project
