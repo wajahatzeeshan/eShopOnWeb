@@ -33,6 +33,11 @@ jobs:
       - name: Build solution
         working-directory: ./eShopOnWeb
         run: dotnet build eShopOnWeb.sln --configuration Release
+      
+      # Build the Web project explicitly for FunctionalTests
+      - name: Build Web project
+        working-directory: ./eShopOnWeb/src/Web
+        run: dotnet build Web.csproj --configuration Release
 
       # Run UnitTests
       - name: Run UnitTests
