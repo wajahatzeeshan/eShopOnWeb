@@ -6,11 +6,11 @@ on: [workflow_dispatch]
 
 #Environment variables https://docs.github.com/en/actions/learn-github-actions/environment-variables
 env:
-  RESOURCE-GROUP: rg-eshoponweb-eastus2 # rg-eshoponweb-westeurope
+  RESOURCE_GROUP: rg-eshoponweb-eastus2 # rg-eshoponweb-westeurope
   LOCATION: eastus2
-  TEMPLATE-FILE: infra/webapp.bicep
-  SUBSCRIPTION-ID: bf5fc1f1-3d46-42a3-aa49-5a72c92ea02e
-  WEBAPP-NAME: devops-webapp-eastus2-56195365
+  TEMPLATE_FILE: infra/webapp.bicep
+  SUBSCRIPTION_ID: bf5fc1f1-3d46-42a3-aa49-5a72c92ea02e
+  WEBAPP_NAME: devops-webapp-eastus2-56195365
 
 
 jobs:
@@ -44,11 +44,11 @@ jobs:
         path: ${{env.DOTNET_ROOT}}/app.zip
         
     # upload the bicep template as artifacts for next job
-    - name: Upload artifact for deployment job
+    - name: Upload bicep template for deployment job
       uses: actions/upload-artifact@v4
       with:
         name: bicep-template
-        path: ${{ env.TEMPLATE-FILE }}
+        path: ${{ env.TEMPLATE_FILE }}
         
   # Use Bicep to deploy infrastructure + Publish webapp 
   deploy:
@@ -62,11 +62,11 @@ jobs:
     - name: Download artifact from build job
       uses: actions/download-artifact@v4
       with:
-        name: .net-app
+        name: dotnet-app
         path: .net-app
   
     #Download the bicep templates from previous job
-    - name: Download artifact from build job
+    - name: Download bicep template from build job
       uses: actions/download-artifact@v4
       with:
         name: bicep-template
@@ -82,25 +82,25 @@ jobs:
     - name: deploy
       uses: azure/arm-deploy@v2
       with:
-        subscriptionId: ${{ env.SUBSCRIPTION-ID }}
-        resourceGroupName: ${{ env.RESOURCE-GROUP }}
+        subscriptionId: ${{ env.SUBSCRIPTION_ID }}
+        resourceGroupName: ${{ env.RESOURCE_GROUP }}
         template: bicep-template/webapp.bicep
-        parameters: 'webAppName=${{ env.WEBAPP-NAME }} location=${{ env.LOCATION }}'
-        failOnStdErr: false   
+        parameters: 'webAppName=${{ env.WEBAPP_NAME }} location=${{ env.LOCATION }}'
+        failOnStdErr: false
     
     # Publish website to Azure App Service (WebApp)
     # Step disabled due to issue where the site sometimes can't be found: https://github.com/microsoft/pipelines-appservice-lib/issues/56. Instead deploy using CLI
     - name: Publish Website to WebApp
       if: false #Disable step due to comment above
-      uses: Azure/webapps-deploy@v3
+      uses: azure/webapps-deploy@v3
       with:
         type: ZIP
-        app-name: ${{ env.WEBAPP-NAME  }}
+        app-name: ${{ env.WEBAPP_NAME }}
         package: .net-app/app.zip
 
     # Publish website to Azure App Service using CLI (WebApp)
-    - name: Publish Website to WebApp
-      uses: Azure/cli@v2
+    - name: Publish Website to WebApp (CLI)
+      uses: azure/cli@v2
       with:
         inlineScript: |
-             az webapp deploy --name ${{ env.WEBAPP-NAME }} --resource-group ${{ env.RESOURCE-GROUP }} --src-path .net-app/app.zip --type zip
+             az webapp deploy --name ${{ env.WEBAPP_NAME }} --resource-group ${{ env.RESOURCE_GROUP }} --src-path .net-app/app.zip --type zip
