@@ -26,17 +26,6 @@ jobs:
       with:
         dotnet-version: '8.0.x'
         dotnet-quality: 'preview'
-    - name: Show dotnet info (diagnostics)
-      run: dotnet --info
-    - name: Ensure ASP.NET Core 8 runtime is installed
-      run: |
-        wget https://dot.net/v1/dotnet-install.sh -O dotnet-install.sh
-        chmod +x dotnet-install.sh
-        # Install the .NET 8 SDK into $HOME/.dotnet so the `dotnet` on PATH is a full SDK
-        ./dotnet-install.sh --channel 8.0 --install-dir $HOME/.dotnet
-        echo "$HOME/.dotnet" >> $GITHUB_PATH
-        echo "DOTNET_ROOT=$HOME/.dotnet" >> $GITHUB_ENV
-        dotnet --list-runtimes
     #Build/Test/Publish the .net project
     - name: Build with dotnet
       run: dotnet build ./eShopOnWeb.sln --configuration Release
@@ -44,23 +33,22 @@ jobs:
       run: dotnet test ./eShopOnWeb.sln --configuration Release
     - name: dotnet publish
       run: |
-        # Publish into the workspace (avoids using pre-evaluated ${{ env.* }} which may be empty)
-        dotnet publish ./src/Web/Web.csproj -c Release -o ./myapp
-        cd ./myapp
+        dotnet publish ./src/Web/Web.csproj -c Release -o ${{env.DOTNET_ROOT}}/myapp
+        cd ${{env.DOTNET_ROOT}}/myapp
         zip -r ../app.zip .
     # upload the published website code artifacts
     - name: Upload artifact for deployment job
       uses: actions/upload-artifact@v4
       with:
         name: .net-app
-        path: ./app.zip
+        path: ${{env.DOTNET_ROOT}}/app.zip
         
     # upload the bicep template as artifacts for next job
     - name: Upload artifact for deployment job
       uses: actions/upload-artifact@v4
       with:
         name: bicep-template
-        path: ${{ env['TEMPLATE-FILE'] }}
+        path: ${{ env.TEMPLATE-FILE }}
         
   # Use Bicep to deploy infrastructure + Publish webapp 
   deploy:
@@ -94,11 +82,10 @@ jobs:
     - name: deploy
       uses: azure/arm-deploy@v2
       with:
-        scope: 'resourceGroup'
-        subscriptionId: ${{ env['SUBSCRIPTION-ID'] }}
-        resourceGroupName: ${{ env['RESOURCE-GROUP'] }}
+        subscriptionId: ${{ env.SUBSCRIPTION-ID }}
+        resourceGroupName: ${{ env.RESOURCE-GROUP }}
         template: bicep-template/webapp.bicep
-        parameters: "webAppName=${{ env['WEBAPP-NAME'] }} location=${{ env.LOCATION }}"
+        parameters: 'webAppName=${{ env.WEBAPP-NAME }} location=${{ env.LOCATION }}'
         failOnStdErr: false   
     
     # Publish website to Azure App Service (WebApp)
@@ -108,7 +95,7 @@ jobs:
       uses: Azure/webapps-deploy@v3
       with:
         type: ZIP
-        app-name: ${{ env['WEBAPP-NAME'] }}
+        app-name: ${{ env.WEBAPP-NAME  }}
         package: .net-app/app.zip
 
     # Publish website to Azure App Service using CLI (WebApp)
@@ -116,4 +103,4 @@ jobs:
       uses: Azure/cli@v2
       with:
         inlineScript: |
-          az webapp deploy --name ${{ env['WEBAPP-NAME'] }} --resource-group ${{ env['RESOURCE-GROUP'] }} --src-path .net-app/app.zip --type zip
+             az webapp deploy --name ${{ env.WEBAPP-NAME }} --resource-group ${{ env.RESOURCE-GROUP }} --src-path .net-app/app.zip --type zip
